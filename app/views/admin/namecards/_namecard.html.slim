@@ -1,0 +1,14 @@
+.namecard
+  .inner
+    .namecard__logo = image_tag "meetup.png"
+    .namecard__name
+      .namecard__icon = image_tag user.avatar_url
+      .namecard__full_name = user.full_name
+    .namecard__account
+      .namecard__login_name = user.login_name
+    .namecard__description = user.description
+
+    .namecard__role = t("target.#{user.role}")
+
+    - if user.company.name != "合同会社フィヨルド"
+      .namecard__company = user.company.name
