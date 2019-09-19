@@ -4,6 +4,9 @@
     = hidden_field_tag :training, "true"
   = render "errors", object: user
   .form__items
+    - if (!user.adviser? || !user.trainee?) && from == :new
+      = render "users/form/card"
+
     = render "users/form/login_name", f: f
     = render "users/form/email", f: f, user: user
 

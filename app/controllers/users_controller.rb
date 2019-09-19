@@ -7,9 +7,9 @@ class UsersController < ApplicationController
   def index
     @target = params[:target] || "student"
     @users = User.with_attached_avatar
-                 .preload(:course)
-                 .order(updated_at: :desc)
-                 .users_role(@target)
+      .preload(:course)
+      .order(updated_at: :desc)
+      .users_role(@target)
   end
 
   def show
@@ -22,25 +22,27 @@ class UsersController < ApplicationController
   end
 
   def create
-    @user = User.new(user_params)
-    @user.company = Company.first
-    @user.course = Course.first
-    if params[:training] == "true"
-      @user.free = true
-      @user.trainee = true
-    end
-    if @user.save
+    @user = User.new
+    user_register = UserRegister.new(@user)
+    if user_register.create(user_params, params[:stripeToken], params[:training])
       UserMailer.welcome(@user).deliver_now
-      SlackNotification.notify "<#{url_for(@user)}|#{@user.full_name} (#{@user.login_name})>が#{User.count}番目の仲間としてBootcampにJOINしました。",
-        username: "#{@user.login_name}@bootcamp.fjord.jp",
-        icon_url: @user.avatar_url
+      notify_to_slack!
       redirect_to root_url, notice: "サインアップメールをお送りしました。メールからサインアップを完了させてください。"
     else
+      @user = user_register.user
       render "new"
     end
   end
 
   private
+
+    def notify_to_slack!
+      SlackNotification.notify "<#{url_for(@user)}|#{@user.full_name} (#{@user.login_name})>が#{User.count}番目の仲間としてBootcampにJOINしました。",
+        username: "#{@user.login_name}@bootcamp.fjord.jp",
+        icon_url: @user.avatar_url
+      redirect_to root_url, notice: "サインアップメールをお送りしました。メールからサインアップを完了させてください。"
+    end
+
     def user_params
       params.require(:user).permit(
         :adviser,
