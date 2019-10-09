@@ -87,4 +87,34 @@ class UserTest < ActiveSupport::TestCase
     user = users(:kimura)
     assert_equal "/images/users/default.png", user.avatar_url
   end
+
+  test "is valid username" do
+    Bootcamp::Setup.attachment
+
+    user = users(:komagata)
+    user.login_name = "abcdABCD1234"
+    assert user.valid?
+    user.login_name = "azAZ-09"
+    assert user.valid?
+    user.login_name = "-abcd1234"
+    assert user.invalid?
+    user.login_name = "abcd1234-"
+    assert user.invalid?
+    user.login_name = "abcd--1234"
+    assert user.invalid?
+    user.login_name = "abcd_1234"
+    assert user.invalid?
+    user.login_name = "abcd!1234"
+    assert user.invalid?
+    user.login_name = "abcd;1234"
+    assert user.invalid?
+    user.login_name = "abcd:1234"
+    assert user.invalid?
+    user.login_name = "あいうえお"
+    assert user.invalid?
+    user.login_name = "アイウエオ"
+    assert user.invalid?
+    user.login_name = "１２３４５"
+    assert user.invalid?
+  end
 end

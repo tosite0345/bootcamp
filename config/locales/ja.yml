@@ -26,7 +26,7 @@ ja:
       book: 書籍
     attributes:
       user:
-        login_name: ユーザー名
+        login_name: アカウント
         first_name: 名
         last_name: 姓
         course_id: コース
