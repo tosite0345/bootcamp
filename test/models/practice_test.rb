@@ -25,16 +25,6 @@ class PracticeTest < ActiveSupport::TestCase
     assert_equal practices(:practice_5).status_by_learnings(learnings), "not_complete"
   end
 
-  test "display_status_by_learnings(learnings)" do
-    learnings = users(:komagata).learnings
-
-    assert_equal practices(:practice_1).display_status_by_learnings(learnings), "着手"
-    assert_equal practices(:practice_2).display_status_by_learnings(learnings), "完了"
-    assert_equal practices(:practice_3).display_status_by_learnings(learnings), "未着手"
-    assert_equal practices(:practice_4).display_status_by_learnings(learnings), "提出"
-    assert_equal practices(:practice_5).display_status_by_learnings(learnings), "未着手"
-  end
-
   test "exists_learning?(user)" do
     assert practices(:practice_1).exists_learning?(users(:komagata))
     assert_not practices(:practice_1).exists_learning?(users(:machida))
