@@ -7,7 +7,7 @@ class CheckCallbacks
     end
 
     if check.checkable_type == "Product"
-      check.checkable.product_checked
+      check.checkable.learning_complete
     end
   end
 end

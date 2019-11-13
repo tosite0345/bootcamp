@@ -11,14 +11,8 @@ class Learning < ActiveRecord::Base
     uniqueness: { scope: :user_id }
   validate :startable_practice
 
-  def product_submitted
-    if self.status != "complete"
-      self.update(status: "submitted")
-    end
-  end
-
-  def product_confirmed
-    self.update(status: "complete")
+  def change_status(status)
+    self.update(status: status)
   end
 
   private

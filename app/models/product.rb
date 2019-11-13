@@ -35,10 +35,10 @@ class Product < ApplicationRecord
     checks.where(user: user).present?
   end
 
-  def product_checked
+  def learning_complete
     learning = Learning.find_by(user_id: self.user.id, practice_id: self.practice.id)
     if learning
-      learning.product_confirmed
+      learning.change_status("complete")
     else
       Learning.create(user_id: self.user.id, practice_id: self.practice.id, status: "complete")
     end

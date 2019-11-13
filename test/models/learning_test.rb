@@ -3,19 +3,13 @@
 require "test_helper"
 
 class LearningTest < ActiveSupport::TestCase
-  test "product_submitted" do
+  test "change status" do
     learning = learnings(:learning_1)
-    learning.product_submitted
+    learning.change_status("submitted")
     assert_equal learning.status, "submitted"
 
-    learning = learnings(:learning_2)
-    learning.product_submitted
-    assert_equal learning.status, "complete"
-  end
-
-  test "product_confirmed" do
     learning = learnings(:learning_1)
-    learning.product_confirmed
+    learning.change_status("complete")
     assert_equal learning.status, "complete"
   end
 
