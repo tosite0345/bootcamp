@@ -42,6 +42,7 @@ ActiveRecord::Schema.define(version: 2019_10_29_070437) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id"
+    t.integer "target", default: 0, null: false
     t.index ["user_id"], name: "index_announcements_on_user_id"
   end
 
@@ -348,6 +349,8 @@ ActiveRecord::Schema.define(version: 2019_10_29_070437) do
     t.boolean "job_seeking", default: false, null: false
     t.string "subscription_id"
     t.boolean "mail_notification", default: true, null: false
+    t.string "kana_first_name", default: "", null: false
+    t.string "kana_last_name", default: "", null: false
     t.integer "prefecture_code"
     t.index ["course_id"], name: "index_users_on_course_id"
     t.index ["remember_me_token"], name: "index_users_on_remember_me_token"

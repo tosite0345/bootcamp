@@ -23,7 +23,7 @@ class Report < ActiveRecord::Base
   validates :reported_on, presence: true, uniqueness: { scope: :user }
   validates :learning_times, length: { minimum: 1, message: ": 学習時間を入力してください。" }
 
-  scope :default_order, -> { order(reported_on: :desc, user_id: :desc) }
+  scope :default_order, -> { order(reported_on: :desc, created_at: :desc) }
 
   scope :unchecked, -> { where.not(id: Check.where(checkable_type: "Report").pluck(:checkable_id)) }
 
@@ -37,6 +37,7 @@ class Report < ActiveRecord::Base
 
   after_create ReportCallbacks.new
   after_update ReportCallbacks.new
+  after_destroy ReportCallbacks.new
 
   def previous
     Report.where(user: user)

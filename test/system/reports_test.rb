@@ -281,7 +281,7 @@ class ReportsTest < ApplicationSystemTestCase
     login_user "kimura", "testtest"
     visit report_path(reports(:report_1))
     assert_difference("Watch.count", -1) do
-      find("div.thread-meta__watch-button", text: "Watch中").click
+      find("div.thread-header__watch-button", text: "Watch中").click
       sleep 0.5
     end
   end
@@ -378,7 +378,7 @@ class ReportsTest < ApplicationSystemTestCase
     login_user "kimura", "testtest"
     visit report_path(reports(:report_1))
     assert_difference("Watch.count", -1) do
-      find("div.thread-meta__watch-button", text: "Watch中").click
+      find("div.thread-header__watch-button", text: "Watch中").click
       sleep 0.5
     end
   end
@@ -448,5 +448,77 @@ class ReportsTest < ApplicationSystemTestCase
     login_user "komagata", "testtest"
     visit "/notifications"
     assert_text "kensyuさんがはじめての日報を書きました！"
+  end
+
+  test "delete report with notification" do
+    login_user "kimura", "testtest"
+    visit "/reports/new"
+    within("#new_report") do
+      fill_in("report[title]", with: "test title")
+      fill_in("report[description]",   with: "test")
+      fill_in("report[reported_on]", with: Time.current)
+    end
+    within(".learning-time__started-at") do
+      select "07"
+      select "30"
+    end
+    within(".learning-time__finished-at") do
+      select "08"
+      select "30"
+    end
+
+    click_button "提出"
+    assert_text "日報を保存しました。"
+
+    login_user "komagata", "testtest"
+    visit "/notifications"
+    assert_text "kimuraさんがはじめての日報を書きました！"
+
+    login_user "kimura", "testtest"
+    visit "/reports"
+    click_on "test title"
+    accept_confirm do
+      click_link "削除"
+    end
+    assert_text "日報を削除しました。"
+
+    login_user "komagata", "testtest"
+    visit "/notifications"
+    assert_no_text "kimuraさんがはじめての日報を書きました！"
+  end
+
+  test "reports are ordered in descending of reported_on" do
+    visit reports_path
+    precede, succeed = reports(:report_2).title, reports(:report_1).title
+    within ".thread-list" do
+      assert page.text.index(precede) < page.text.index(succeed)
+    end
+  end
+
+  test "reports are ordered in descending of created_at if reported_on is same" do
+    visit reports_path
+    precede, succeed = reports(:report_5).title, reports(:report_1).title
+    within ".thread-list" do
+      assert page.text.index(precede) < page.text.index(succeed)
+    end
+  end
+
+  test "reports can be checked as plain markdown" do
+    visit "/reports/new"
+    within("#new_report") do
+      fill_in("report[title]", with: "check plain markdown")
+      fill_in("report[description]", with: "## this is heading2")
+      fill_in("report[reported_on]", with: Time.current)
+    end
+
+    all(".learning-time")[0].all(".learning-time__started-at select")[0].select("07")
+    all(".learning-time")[0].all(".learning-time__started-at select")[1].select("30")
+    all(".learning-time")[0].all(".learning-time__finished-at select")[0].select("08")
+    all(".learning-time")[0].all(".learning-time__finished-at select")[1].select("30")
+
+    click_button "提出"
+    click_link "Raw"
+    switch_to_window windows.last
+    assert_text "## this is heading2", exact: true
   end
 end
