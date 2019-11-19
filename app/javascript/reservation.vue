@@ -8,13 +8,8 @@
         | {{ this.loginName }}
 </template>
 <script>
-
 export default {
-  props: ['parentSeatId', 'parentDate', 'parentReservation', 'currentUserId'],
-  data: () => {
-    return {
-    }
-  },
+  props: ['parentReservation', 'currentUserId'],
   methods: {
     token () {
       const meta = document.querySelector('meta[name="csrf-token"]')
@@ -27,12 +22,6 @@ export default {
     }
   },
   computed: {
-    seatId: function() {
-      return this.parentSeatId || null
-    },
-    date: function() {
-      return this.parentDate || null
-    },
     id: function() {
       if(!(this.parentReservation === undefined)){
         return this.parentReservation.id
